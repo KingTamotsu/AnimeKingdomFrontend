@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  anime-kingdom-frontend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: anime-kingdom-frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add development service
+  anime-kingdom-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: anime-kingdom-dev
+    ports:
+      - "4200:4200"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
