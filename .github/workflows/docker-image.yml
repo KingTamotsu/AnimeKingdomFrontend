@@ -29,12 +29,12 @@ jobs:
       run: |
         TAG=$(date +%s)
         echo "TAG=$TAG" >> $GITHUB_ENV
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:$TAG
-        docker tag ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:$TAG ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:latest
-        echo "Built image animefrontend:$TAG"
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontend$TAG
+        docker tag ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontend$TAG ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontendlatest
+        echo "Built image animekingdom:frontend$TAG"
 
       # Step 4: Push Docker image (optional)
     - name: Push Docker image
       run: |
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:$TAG
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontend$TAG
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontendlatest
