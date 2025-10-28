@@ -23,18 +23,33 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     
-      # Step 3: Build Docker image (your version)
+   # Step 3: Build Docker image (your original command, fixed)
     - name: Build Docker image with timestamp tag
       id: build_image
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       run: |
         TAG=$(date +%s)
+        IMAGE_NAME="${DOCKERHUB_USERNAME}/animefrontend"
         echo "TAG=$TAG" >> $GITHUB_ENV
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:$TAG
-        docker tag ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:$TAG ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:latest
-        echo "Built image animefrontend:$TAG"
+        echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
-      # Step 4: Push Docker image (optional)
+        echo "Building image: ${IMAGE_NAME}:${TAG}"
+        docker build . --file Dockerfile --tag ${IMAGE_NAME}:${TAG} --tag ${IMAGE_NAME}:latest
+
+    # Step 4: Push Docker image to Docker Hub
     - name: Push Docker image
+      env:
+        IMAGE_NAME: ${{ env.IMAGE_NAME }}
+        TAG: ${{ env.TAG }}
       run: |
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:$TAG
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/animefrontend:latest
+        echo "Pushing ${IMAGE_NAME}:${TAG}"
+        docker push ${IMAGE_NAME}:${TAG}
+        docker push ${IMAGE_NAME}:latest
+
+    # Step 5: Print image info for debugging
+    - name: Output image info
+      run: |
+        echo "Image built and pushed:"
+        echo "  -> ${IMAGE_NAME}:${TAG}"
+        echo "  -> ${IMAGE_NAME}:latest"
