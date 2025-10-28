@@ -30,12 +30,12 @@ jobs:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       run: |
         TAG=$(date +%s)
-        IMAGE_NAME="${DOCKERHUB_USERNAME}/animefrontend"
+        IMAGE_NAME="${DOCKERHUB_USERNAME}/animekingdom"
         echo "TAG=$TAG" >> $GITHUB_ENV
         echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
-        echo "Building image: ${IMAGE_NAME}:${TAG}"
-        docker build . --file Dockerfile --tag ${IMAGE_NAME}:${TAG} --tag ${IMAGE_NAME}:latest
+        echo "Building image: ${IMAGE_NAME}:frontend${TAG}"
+        docker build . --file Dockerfile --tag ${IMAGE_NAME}:frontend${TAG} --tag ${IMAGE_NAME}:frontendlatest
 
     # Step 4: Push Docker image to Docker Hub
     - name: Push Docker image
@@ -43,13 +43,13 @@ jobs:
         IMAGE_NAME: ${{ env.IMAGE_NAME }}
         TAG: ${{ env.TAG }}
       run: |
-        echo "Pushing ${IMAGE_NAME}:${TAG}"
-        docker push ${IMAGE_NAME}:${TAG}
-        docker push ${IMAGE_NAME}:latest
+        echo "Pushing ${IMAGE_NAME}:frontend${TAG}"
+        docker push ${IMAGE_NAME}:frontend${TAG}
+        docker push ${IMAGE_NAME}:frontendlatest
 
     # Step 5: Print image info for debugging
     - name: Output image info
       run: |
         echo "Image built and pushed:"
-        echo "  -> ${IMAGE_NAME}:${TAG}"
-        echo "  -> ${IMAGE_NAME}:latest"
+        echo "  -> ${IMAGE_NAME}:frontend${TAG}"
+        echo "  -> ${IMAGE_NAME}:frontendlatest"
