@@ -32,7 +32,9 @@ jobs:
         TAG=$(date +%s)
         IMAGE_NAME="${DOCKERHUB_USERNAME}/animekingdom"
         echo "TAG=$TAG" >> $GITHUB_ENV
-        echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontend$TAG
+        docker tag ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontend$TAG ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontendlatest
+        echo "Built image animekingdom:frontend$TAG"
 
         echo "Building image: ${IMAGE_NAME}:frontend${TAG}"
         docker build . --file Dockerfile --tag ${IMAGE_NAME}:frontend${TAG} --tag ${IMAGE_NAME}:frontendlatest
@@ -50,6 +52,5 @@ jobs:
     # Step 5: Print image info for debugging
     - name: Output image info
       run: |
-        echo "Image built and pushed:"
-        echo "  -> ${IMAGE_NAME}:frontend${TAG}"
-        echo "  -> ${IMAGE_NAME}:frontendlatest"
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontend$TAG
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/animekingdom:frontendlatest
